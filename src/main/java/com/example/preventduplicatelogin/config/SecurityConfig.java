@@ -1,6 +1,5 @@
 package com.example.preventduplicatelogin.config;
 
-import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -15,7 +14,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -23,11 +22,14 @@ public class SecurityConfig {
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(req ->
                         req
-                                .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(login ->
-                        login.defaultSuccessUrl("/", true)
+                        login
+                                .loginPage("/login") // 로그인페이지를 호출할 /login 호출
+                                .loginProcessingUrl("/login-process") // form action url
+                                .defaultSuccessUrl("/", true)
+                                .permitAll()
                 )
                 .logout(Customizer.withDefaults());
 
