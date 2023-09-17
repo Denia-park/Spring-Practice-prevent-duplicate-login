@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -36,8 +38,27 @@ public class SecurityConfig {
                                 .defaultSuccessUrl("/", true)
                                 .permitAll() //Login 관련 페이지에 접근할때는 Authenticate 하지 않도록 하는 설정
                 )
-                .logout(Customizer.withDefaults());
+
+                .logout(Customizer.withDefaults())
+
+                .sessionManagement(sm ->
+                        sm
+                                .maximumSessions(1)
+
+                                //maxSessionPreventsLogin : true 일 경우, 기존에 동일한 사용자가 로그인이 되어있으면 이후 로그인이 불가
+                                // false 일경우는 로그인이 되고 기존 접속된 사용자는 Session이 종료된다. false 가 기본값
+                                .maxSessionsPreventsLogin(false)
+
+                                .expiredUrl("/duplicated-login")
+                                .sessionRegistry(sessionRegistry())
+                );
 
         return http.build();
+    }
+
+    // logout 후 login할 때 정상동작을 위함
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
     }
 }
