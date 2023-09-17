@@ -1,5 +1,6 @@
 package com.example.preventduplicatelogin.login;
 
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 @RequiredArgsConstructor
+@EqualsAndHashCode(of = {"userId"})
 public class UserDetailImpl implements UserDetails {
     private final String userId;
     private final String password;
