@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserDetailServiceImpl implements UserDetailsService {
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
@@ -24,8 +26,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
 
-        UserDetailImpl serviceUserDetail = new UserDetailImpl(user.getUserId(), user.getPassword());
+        final String encryptedPassword = passwordEncoder.encode(user.getPassword());
 
-        return serviceUserDetail;
+        return new UserDetailImpl(user.getUserId(), encryptedPassword);
     }
 }
