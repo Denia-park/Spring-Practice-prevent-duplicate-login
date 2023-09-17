@@ -34,7 +34,7 @@ public class SecurityConfig {
                                 .loginPage("/login") // 로그인페이지를 호출할 /login 호출
                                 .loginProcessingUrl("/login-process") // form action url
                                 .defaultSuccessUrl("/", true)
-                                .permitAll()
+                                .permitAll() //Login 관련 페이지에 접근할때는 Authenticate 하지 않도록 하는 설정
                 )
                 .logout(Customizer.withDefaults());
 
