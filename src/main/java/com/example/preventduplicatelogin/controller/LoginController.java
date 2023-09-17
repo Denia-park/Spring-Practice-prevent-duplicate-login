@@ -9,4 +9,9 @@ public class LoginController {
     public String getLoginPage() {
         return "login";
     }
+
+    @GetMapping("/duplicated-login")
+    public String getDuplicatedLogin() {
+        return "duplicated-login";
+    }
 }
